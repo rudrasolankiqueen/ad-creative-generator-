@@ -1,13 +1,13 @@
 import streamlit as st
-import openai
+from openai import OpenAI  # Updated import
 
-# Set OpenAI API key
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# Initialize client
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 st.title("Ad Creative Generator")
 st.subheader("Built with Streamlit + OpenAI")
 
-# Input fields
+# Input fields (unchanged)
 brand = st.text_input("Brand Name", value="")
 product = st.text_input("Product/Service", value="")
 primary_color = st.text_input("Primary Color", value="")
@@ -28,7 +28,7 @@ if st.button("Generate Ad Creative"):
             )
 
             try:
-                response = openai.ChatCompletion.create(
+                response = client.chat.completions.create(  # Updated syntax
                     model="gpt-3.5-turbo",
                     messages=[
                         {"role": "system", "content": "You are a creative digital marketing assistant."},
@@ -36,7 +36,7 @@ if st.button("Generate Ad Creative"):
                     ]
                 )
 
-                output = response.choices[0].message["content"]
+                output = response.choices[0].message.content  # Updated access
                 st.success("Ad Creative Generated:")
                 st.markdown(output)
 
